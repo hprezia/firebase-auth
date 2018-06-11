@@ -7,17 +7,14 @@ class Login extends Component {
   constructor() {
     super();
 
-    const provider = new firebase.auth.GoogleAuthProvider();
-
     this.state = {
       email: '',
       password: '',
-      provider: provider,
     };
 
     this._onChange = this._onChange.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
-    this._onGoogleLogin = this._onGoogleLogin.bind(this);
+    // this._signInWithRedirect = this._signInWithRedirect.bind(this);
   }
 
   _onChange(event) {
@@ -39,8 +36,16 @@ class Login extends Component {
     });
   }
 
-  _onGoogleLogin() {
-    firebase.auth().signInWithRedirect(this.state.provider);
+  _signInWithRedirect(provider) {
+    let _provider = undefined;
+
+    if (provider === 'google')
+      _provider = new firebase.auth.GoogleAuthProvider();
+    else if (provider === 'facebook')
+      _provider = new firebase.auth.FacebookAuthProvider();
+
+    if (!!_provider && _provider !== '')
+      firebase.auth().signInWithRedirect(_provider);
   }
 
   render() {
@@ -52,7 +57,9 @@ class Login extends Component {
         <input type='password' name='password' value={this.state.password} onChange={this._onChange}/>
         <button onClick={this._onSubmit}>Login</button>
         <hr/>
-        <button onClick={this._onGoogleLogin}>Google login</button>
+        <button onClick={this._signInWithRedirect.bind(this, 'google')}>Google login</button>
+        <br/>
+        <button onClick={this._signInWithRedirect.bind(this, 'facebook')}>Facebook login</button>
       </div>
     );
   }
