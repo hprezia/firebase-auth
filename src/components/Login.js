@@ -7,15 +7,17 @@ class Login extends Component {
   constructor() {
     super();
 
+    const provider = new firebase.auth.GoogleAuthProvider();
+
     this.state = {
       email: '',
       password: '',
+      provider: provider,
     };
 
     this._onChange = this._onChange.bind(this);
     this._onSubmit = this._onSubmit.bind(this);
-
-    console.log(process.env, process.env.REACT_APP_API_URL);
+    this._onGoogleLogin = this._onGoogleLogin.bind(this);
   }
 
   _onChange(event) {
@@ -37,6 +39,10 @@ class Login extends Component {
     });
   }
 
+  _onGoogleLogin() {
+    firebase.auth().signInWithRedirect(this.state.provider);
+  }
+
   render() {
     return (
       <div className="Login">
@@ -45,6 +51,8 @@ class Login extends Component {
         <label>Password</label>
         <input type='password' name='password' value={this.state.password} onChange={this._onChange}/>
         <button onClick={this._onSubmit}>Login</button>
+        <hr/>
+        <button onClick={this._onGoogleLogin}>Google login</button>
       </div>
     );
   }
